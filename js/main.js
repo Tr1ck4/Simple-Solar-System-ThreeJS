@@ -1,9 +1,7 @@
-// main.js
+
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createSun } from './sun.js';
-import { createPlanet } from './planet.js';
-import { createOrbitLine } from './orbit.js';
+import { Car } from './car.js'
 
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
@@ -13,53 +11,34 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls( camera, renderer.domElement );
 
+
+// Ambient Light
+const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+scene.add(ambientLight);
+
+// Directional Light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 7.5).normalize();
+scene.add(directionalLight);
 // Lighting
 const pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(0, 0, 0); // Light source at the center (Sun)
 scene.add(pointLight);
 
-// Sun
-const sun = createSun();
-scene.add(sun);
+//set background
+scene.background = new THREE.Color(0xEEA733);
 
-// Planets
-const planetsData = [
-    { size: 0.035, distance: 1.3, texture: 'textures/mercury_texture.jpg',rotationSpeed: 0.02 },
-    { size: .087, distance: 2.4, texture: 'textures/venus_texture.jpg',rotationSpeed: 0.015 },
-    { size: .091, distance: 3.2, texture: 'textures/earth_texture.jpg',rotationSpeed: 0.01  },
-    { size: .049, distance: 4.8, texture: 'textures/mars_texture.jpg',rotationSpeed: 0.008 },
-    { size: 1, distance: 16.64, texture: 'textures/jupiter_texture.jpg',rotationSpeed: 0.005 },
-    { size: .9, distance: 30.4, texture: 'textures/saturn_texture.jpg',rotationSpeed: 0.004 },
-    { size: .4, distance: 63.6, texture: 'textures/uranus_texture.jpg',rotationSpeed: 0.003 },
-    { size: .38, distance: 100, texture: 'textures/neptune_texture.jpg',rotationSpeed: 0.002 }
-];
-
-const planets = planetsData.map(data => {
-    const planet = createPlanet(data.size, data.texture, data.distance);
-    scene.add(planet);
-    const orbit = createOrbitLine(data.distance);
-    scene.add(orbit);
-    return { planet, distance: data.distance, rotationSpeed: data.rotationSpeed };
-});
-
+//loader
+const car = new Car(scene,camera);
 
 // Camera Position
-camera.position.z = 10;
+camera.position.set(0, 0.5, 11.5);
 
 // Animation
 const animate = function () {
     requestAnimationFrame(animate);
-
-    const time = Date.now() * 0.0001;
-
-    planets.forEach((planetData, index) => {
-        planetData.planet.position.x = planetData.distance * Math.cos(time + index);
-        planetData.planet.position.z = planetData.distance * Math.sin(time + index);
-        planetData.planet.rotation.y += planetData.rotationSpeed;
-    });
-
-    sun.rotation.y += 0.002;
-
+    //car.updateCamera(); 
+    car.update();
     renderer.render(scene, camera);
 };
 
