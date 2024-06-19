@@ -1,5 +1,6 @@
 import { ModelLoader } from './Loader.js';
 import * as THREE from 'three';
+import { GUI } from 'dat.gui'
 export class Car {
     constructor(scene, camera) {
         this.scene = scene;
@@ -19,60 +20,72 @@ export class Car {
     loadCarModel() {
         this.loader.loadModel('../GT/GT.obj', (obj) => {
             this.model = obj;
+            const gui = new GUI();
+            const carFolder = gui.addFolder('Parts');
             this.model.traverse((child) => {
-                console.log(child.name)
+                console.log(child)
                 if (child.isMesh) {
+                    child.material = new THREE.MeshStandardMaterial({ color: 0x000000 });
+                    const colorController = {
+                        color: `#${child.material.color.getHexString()}`
+                    };
+                    carFolder.addColor(colorController, 'color').name(child.name || `Part ${carFolder.__controllers.length + 1}`).onChange((value) => {
+                        child.material.color.set(value);
+                    });
                     //step window
                     if (child.name == 'part 000' || child.name == 'part 001'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //fly wing
                     if (child.name == 'part 002'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //glass
                     if (child.name == 'part 003'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //tire
                     if (child.name == 'part 028' || child.name == 'part 025' || child.name == 'part 026' || child.name == 'part 027'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xffff00 }); 
+ 
                     }
                     //headlight
                     if (child.name == 'part 014'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //capo
                     if (child.name == 'part 015'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //interior
                     if (child.name == 'part 011'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //door
                     if (child.name == 'part 012' || child.name == 'part 033'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //back front panel
                     if (child.name == 'part 013'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //brake
                     if (child.name == 'part 021' || child.name == 'part 022' || child.name == 'part 023' || child.name == 'part 024'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                     //roof + windshield
                     if (child.name == 'part 031'){
-                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); 
+                         
                     }
                 }
             });
+            carFolder.open();
             this.scene.add(this.model);
         }, (error) => {
             console.error(error);
         });
     }
+
+
 
     initMovement() {
         window.addEventListener('keydown', (event) => {
