@@ -5,10 +5,23 @@
     <title>Solar System with Three.js</title>
     <style>
         body { margin: 0; }
-        
+        #hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            z-index: 1;
+          }
     </style>
 </head>
 <body>
+    <div id="hud">
+        <p>Counter: <span id="counterValue">0</span></p>
+        <p>Level: <span id="levelValue">0</span></p>
+    </div>
     <script type="module" src="js/main.js"></script>
+    
 </body>
 </html>
