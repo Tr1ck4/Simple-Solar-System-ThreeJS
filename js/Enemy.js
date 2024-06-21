@@ -26,19 +26,10 @@ export class Enemy {
                 this.scene.remove(this.mesh);
                 this.mesh = null;
                 this.boundingBox = null;
+                this.isHit = true;
                 return;
             }
-            if (this.isHit) {
-                this.scene.remove(this.mesh);
-                this.mesh = null;
-                this.boundingBox = null;
-                return;
-            }
-            this.boundingBox.setFromObject(this.mesh); // Update the bounding box
+            this.boundingBox.setFromObject(this.mesh);
         }
-    }
-
-    hit() {
-        this.isHit = true;
     }
 }

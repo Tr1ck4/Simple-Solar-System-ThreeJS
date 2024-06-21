@@ -8,6 +8,7 @@ export class Tile {
         this.model = null;
         this.mesh = null;
         this.boundingBox = null;
+        this.direction = new THREE.Vector3();
         this.init();
     }
 
@@ -15,19 +16,23 @@ export class Tile {
         this.model = new THREE.BoxGeometry(0.2, 0.2, 0.5);
         let material = new THREE.MeshBasicMaterial({ color: 'red' });
         this.mesh = new THREE.Mesh(this.model, material);
-        this.mesh.position.set(0, 0, 5);
+        const vector = new THREE.Vector3(0, 0, -5).applyMatrix4(this.camera.matrixWorld);
+        this.mesh.position.set(vector.x, vector.y, vector.z);
+
+
+        this.mesh.quaternion.copy(this.camera.quaternion);
         this.scene.add(this.mesh);
         this.boundingBox = new THREE.Box3().setFromObject(this.mesh);
     }
 
     update() {
-        if (!this.mesh) return; // Return early if the mesh is null
+        if (!this.mesh) return; 
 
         if (this.mesh.position.z < -10) {
             this.destroy();
         } else {
             this.mesh.position.z -= 0.1;
-            this.boundingBox.setFromObject(this.mesh); // Update the bounding box
+            this.boundingBox.setFromObject(this.mesh);
         }
     }
 
